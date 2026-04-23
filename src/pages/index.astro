@@ -44,7 +44,7 @@
     "alternateName": "OHA",
     "description": "Bali's most complete premium coworking and coliving space. 1,400m² oceanfront in Amed, northeast Bali. Private offices, recording studio, conference room, call booths, rooftop jacuzzi, café and coliving with views of Mount Agung.",
     "url": "https://oceanhubamed.com",
-    "logo": "https://oceanhubamed.com/logo.png",
+    "logo": "https://oceanhubamed.com/logo/oha-v2.png",
     "image": "https://oceanhubamed.com/og-image.jpg",
     "email": "hello@oceanhubamed.com",
     "address": {
@@ -92,6 +92,10 @@
       --ocean:   #5BADA8;
       --sky:     #C4E4E2;
       --white:   #FFFFFF;
+
+      /* Color del logo en el hero (fondo navy). Cámbialo en una línea si
+         más adelante pones el logo sobre fondo claro: var(--navy). */
+      --logo-color: var(--cream);
       --font-display: 'Cormorant Garamond', Georgia, serif;
       --font-body:    'Inter', system-ui, sans-serif;
       --ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -149,7 +153,17 @@
       font-size: 0.78rem; font-weight: 400; letter-spacing: 0.28em;
       text-transform: uppercase; color: var(--sky); margin-bottom: 1.75rem;
     }
-    .hero-logo-svg { width: clamp(160px, 28vw, 300px); margin: 0 auto 1.25rem; display: block; }
+    .hero-logo {
+      /* El PNG /logo/oha-v2.png es monocromo negro — lo usamos como mask
+         para poder teñirlo con --logo-color desde CSS. */
+      width: clamp(200px, 32vw, 360px);
+      aspect-ratio: 767 / 354;
+      margin: 0 auto 1.25rem;
+      display: block;
+      background-color: var(--logo-color);
+      -webkit-mask: url('/logo/oha-v2.png') center / contain no-repeat;
+              mask: url('/logo/oha-v2.png') center / contain no-repeat;
+    }
     .hero-subtitle {
       font-size: 0.78rem; font-weight: 400; letter-spacing: 0.32em;
       text-transform: uppercase; color: rgba(196,228,226,0.75); margin-bottom: 1.75rem;
@@ -332,28 +346,8 @@
     <div class="hero-content">
       <p class="hero-eyebrow">Amed &nbsp;·&nbsp; Bali &nbsp;·&nbsp; Indonesia</p>
 
-      <!-- OHA Logo SVG trazado: O=sol+océano, H=bambú, A=volcán -->
-      <svg class="hero-logo-svg" viewBox="0 0 300 155" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="OHA — Ocean Hub Amed">
-        <!-- O: círculo con línea de horizonte y ondas del océano -->
-        <circle cx="50" cy="68" r="44" stroke="#F2EFEA" stroke-width="6.5" fill="none"/>
-        <line x1="6" y1="76" x2="94" y2="76" stroke="#5BADA8" stroke-width="3"/>
-        <line x1="13" y1="86" x2="87" y2="86" stroke="#5BADA8" stroke-width="1.5" opacity="0.5"/>
-        <line x1="21" y1="95" x2="79" y2="95" stroke="#C4E4E2" stroke-width="1" opacity="0.3"/>
-        <!-- H: dos postes de bambú con nodos y travesaño -->
-        <rect x="114" y="24" width="13" height="88" rx="2.5" fill="#F2EFEA"/>
-        <rect x="112" y="48" width="17" height="5" rx="2" fill="#5BADA8" opacity="0.8"/>
-        <rect x="112" y="84" width="17" height="5" rx="2" fill="#5BADA8" opacity="0.8"/>
-        <rect x="173" y="24" width="13" height="88" rx="2.5" fill="#F2EFEA"/>
-        <rect x="171" y="48" width="17" height="5" rx="2" fill="#5BADA8" opacity="0.8"/>
-        <rect x="171" y="84" width="17" height="5" rx="2" fill="#5BADA8" opacity="0.8"/>
-        <rect x="127" y="62" width="46" height="10" rx="2.5" fill="#F2EFEA"/>
-        <!-- A: silueta de volcán con travesaño y cráter -->
-        <polygon points="255,24 215,112 295,112" fill="none" stroke="#F2EFEA" stroke-width="6.5" stroke-linejoin="round"/>
-        <line x1="230" y1="86" x2="280" y2="86" stroke="#F2EFEA" stroke-width="5.5"/>
-        <line x1="249" y1="31" x2="261" y2="31" stroke="#5BADA8" stroke-width="3" stroke-linecap="round"/>
-        <!-- Línea de horizonte unificadora -->
-        <line x1="0" y1="120" x2="300" y2="120" stroke="#5BADA8" stroke-width="1.2" opacity="0.35"/>
-      </svg>
+      <!-- OHA logo (oha-v2.png negro, teñido vía CSS mask a --logo-color) -->
+      <div class="hero-logo" role="img" aria-label="OHA — Ocean Hub Amed"></div>
 
       <p class="hero-subtitle">Coliving &nbsp;&amp;&nbsp; Coworking</p>
       <p class="hero-tagline">Deep work by the ocean</p>
