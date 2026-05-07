@@ -18,7 +18,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://oceanhubamed.com/" />
   <meta property="og:title" content="OHA Ocean Hub Amed — Deep work by the ocean" />
-  <meta property="og:description" content="Bali's most complete coworking & coliving. 1,400m² oceanfront in Amed — private offices, recording studio, volcano views, rooftop jacuzzi. Opening 2025." />
+  <meta property="og:description" content="Bali's most complete coworking & coliving. 1,400m² oceanfront in Amed — private offices, recording studio, volcano views, rooftop jacuzzi. Opening October 2026." />
   <meta property="og:image" content="https://oceanhubamed.com/og-image.jpg" />
   <meta property="og:locale" content="en_US" />
   <meta property="og:site_name" content="Ocean Hub Amed" />
@@ -77,12 +77,16 @@
   }
   </script>
 
-  <!-- Fonts -->
+  <!-- Fonts (non-blocking: cargar en paralelo sin bloquear el render) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap" />
+  <link rel="stylesheet" media="print" onload="this.media='all';this.onload=null;" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap" />
+  <noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap" />
+  </noscript>
 
-  <style>
+  <style is:inline>
     :root {
       --navy:    #0F2A34;
       --teal:    #1E3F3A;
@@ -557,7 +561,7 @@
   <!-- Waitlist -->
   <section id="notify">
     <div class="container reveal">
-      <p class="section-label">Opening 2025</p>
+      <p class="section-label">Opening October 2026</p>
       <h2 class="section-title">Be the first<br><em>through the door</em></h2>
       <p class="section-body">OHA is currently under construction. Leave your email and we'll notify you the moment bookings open — with an exclusive early-access offer for founding members.</p>
       <form class="notify-form" name="waitlist" method="POST" data-netlify="true" action="/thanks">
@@ -572,15 +576,29 @@
   <footer>
     <div class="footer-brand">Ocean Hub Amed &nbsp;·&nbsp; OHA</div>
     <div class="footer-tagline">Deep work by the ocean</div>
-    <a href="mailto:hello@oceanhubamed.com" class="footer-email">hello@oceanhubamed.com</a>
+    <a href="#" class="footer-email" id="footer-email" data-user="hello" data-domain="oceanhubamed.com">hello&#64;oceanhubamed.com</a>
   </footer>
 
   <script>
+    // Navbar scroll: usamos requestAnimationFrame + flag para evitar reflow forzado.
     const navbar = document.getElementById('navbar');
+    let scrollTicking = false;
+    let isScrolled = false;
     window.addEventListener('scroll', () => {
-      navbar.classList.toggle('scrolled', window.scrollY > 60);
+      if (!scrollTicking) {
+        window.requestAnimationFrame(() => {
+          const shouldScroll = window.scrollY > 60;
+          if (shouldScroll !== isScrolled) {
+            navbar.classList.toggle('scrolled', shouldScroll);
+            isScrolled = shouldScroll;
+          }
+          scrollTicking = false;
+        });
+        scrollTicking = true;
+      }
     }, { passive: true });
 
+    // Reveal-on-scroll
     const reveals = document.querySelectorAll('.reveal');
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry, i) => {
@@ -591,6 +609,14 @@
       });
     }, { threshold: 0.08 });
     reveals.forEach(el => observer.observe(el));
+
+    // Mailto en JS para evitar Cloudflare email-decode (~450 ms en la ruta crítica).
+    const fe = document.getElementById('footer-email');
+    if (fe) {
+      const u = fe.getAttribute('data-user');
+      const d = fe.getAttribute('data-domain');
+      fe.setAttribute('href', 'mailto:' + u + '@' + d);
+    }
   </script>
 
 </body>
